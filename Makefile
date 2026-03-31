@@ -1,32 +1,38 @@
-M := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
+ROOT_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 
-KDIR ?= /lib/modules/$(shell uname -r)/build
-MO ?= $(M)/build
+SRC_DIR := $(ROOT_DIR)/src
+TEST_DIR := $(ROOT_DIR)/test
 
 CC ?= gcc
-TEST_BIN := $(MO)/test-malign
-TEST_SRC := $(M)/test/malign.c
+CFLAGS ?= -Wall -O2
+OUT_DIR ?= $(ROOT_DIR)/build
 
-all: modules test_bin
+TEST_SRCS := $(wildcard $(TEST_DIR)/*.c)
+TEST_BINS := $(TEST_SRCS:$(TEST_DIR)/%.c=$(OUT_DIR)/%)
+
+all: modules $(TEST_BINS)
 
 modules:
-	$(MAKE) -C $(KDIR) M=$(M) MO=$(MO) modules
+	$(MAKE) -C $(SRC_DIR) MO=$(OUT_DIR) modules
 
 modules_install:
-	$(MAKE) -C $(KDIR) M=$(M) MO=$(MO) modules_install
+	$(MAKE) -C $(SRC_DIR) MO=$(OUT_DIR) modules_install
 
 clean:
-	$(MAKE) -C $(KDIR) M=$(M) MO=$(MO) clean
+	rm -rf $(OUT_DIR)
 
 help:
-	$(MAKE) -C $(KDIR) M=$(M) MO=$(MO) help
+	$(MAKE) -C $(SRC_DIR) MO=$(OUT_DIR) help
 
-$(TEST_BIN): $(TEST_SRC)
-	$(CC) $< -o $@
+test: $(TEST_BINS)
+	@for bin in $(TEST_BINS); do \
+		$$bin; \
+	done
 
-test_bin: $(TEST_BIN)
+$(OUT_DIR)/%: $(TEST_DIR)/%.c | $(OUT_DIR)
+	$(CC) $(CFLAGS) -o $@ $<
 
-test: test_bin
-	$(TEST_BIN)
+$(OUT_DIR):
+	mkdir -p $@
 
-.PHONY: all modules modules_install clean help test_bin test
+.PHONY: all modules modules_install test clean help

@@ -8,7 +8,7 @@
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 
-#include "../include/malign.h"
+#include "../src/include/malign.h"
 
 #define MMAP_MAX_ALIGN 45
 #define MMAP_MAX_SIZE 0x100000000

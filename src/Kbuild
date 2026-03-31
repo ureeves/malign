@@ -1,0 +1,4 @@
+obj-m += malign.o
+
+malign-y := km.o
+malign-y += mm.o

@@ -1,7 +1,7 @@
 #include <linux/cdev.h>
 #include <linux/file.h>
 
-#include "../include/malign.h"
+#include "./include/malign.h"
 #include "mm.h"
 
 static int malign_fops_open(struct inode *inode, struct file *filp) {
