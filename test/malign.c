@@ -85,8 +85,6 @@ int main(int argc, char *argv[]) {
               len);
       return 1;
     }
-    fprintf(stdout, "1st mmap(): [%16p ∣ 1 << %2u; %10lu]\n", ptr_1st, align,
-            len);
 
     if ((uintptr_t)ptr_2nd % align_uint) {
       fclose(malign);
@@ -94,8 +92,6 @@ int main(int argc, char *argv[]) {
               len);
       return 1;
     }
-    fprintf(stdout, "2nd mmap(): [%16p ∣ 1 << %2u; %10lu]\n", ptr_2nd, align,
-            len);
   }
 
   fclose(malign);
